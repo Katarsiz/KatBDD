@@ -12,7 +12,7 @@ public class BaseDeDatos{
 
 	private Connection c;
 	private Statement s;
-	private Tabla tablaP, tablaA, tablaG;
+	private Tabla tablaP, tablaA, tablaG;	
 
 	public BaseDeDatos() throws SQLException, ClassNotFoundException{
 		conecta();
@@ -50,8 +50,13 @@ public class BaseDeDatos{
 			s.executeUpdate(tabla1);
 			s.executeUpdate(tabla2);
 			s.executeUpdate(tabla3);
+			DataSet ds1 = new DataSet("El Grito.jpg","El Grito","Oleo","Edvard Munch","Expresionismo","Noruega");
+			DataSet ds2 = new DataSet("Pierre Auguste Renoir","1841-02-25","1919-12-03","220","La Posada de la Mere Antony","5");
+			DataSet ds3 = new DataSet("OMR","Mexico","15700","1983-01-05","Modernista","Arte Contemporaneo");
 		} catch (SQLException exe){
 			System.out.println("Las tablas ya existen");
+		} catch (Exception xe){
+			System.out.println("Error");
 		}
 		System.out.println("Nueva Base De Datos Creada.");
 	}
@@ -83,7 +88,6 @@ public class BaseDeDatos{
 			search = table.datos[0] + " IS NOT NULL;";
 		}
 		search = "SELECT * FROM " + table.denominacion + " WHERE " + search; 
-		System.out.println(search);
 		ResultSet rs = s.executeQuery(search);	
 		while(rs.next()){
 			String t1 = rs.getString(table.datos[0]);
@@ -96,6 +100,32 @@ public class BaseDeDatos{
 			busqueda.agrega(dl);
 		}
 		if (busqueda==null){
+			throw new UnrealException();
+		} return busqueda;
+	}
+
+	public Lista<DataSet> busca2(String tabla, String condicion, String valor) throws UnrealException,SQLException,DatoInvalidoException{
+		Tabla table = tablaSeleccionada(tabla);
+		String search;		
+		Lista<DataSet> busqueda = new Lista<DataSet>();
+		search = "SELECT * FROM " + table.denominacion + " WHERE " + condicion;
+		search += " LIKE '%" + valor + "%'";
+		if (valor.equals("")){
+			return busca(tabla,null,null);
+		}		
+		search +=";";
+		ResultSet rs = s.executeQuery(search);	
+		while(rs.next()){
+			String t1 = rs.getString(table.datos[0]);
+			String t2 = rs.getString(table.datos[1]);
+			String t3 = rs.getString(table.datos[2]);
+			String t4 = rs.getString(table.datos[3]);
+			String t5 = rs.getString(table.datos[4]);
+			String t6 = rs.getString(table.datos[5]);
+			DataSet dl = new DataSet(t1,t2,t3,t4,t5,t6);
+			busqueda.agrega(dl);
+		}
+		if (busqueda.getElementos()==0){
 			throw new UnrealException();
 		} return busqueda;
 	}
@@ -141,7 +171,6 @@ public class BaseDeDatos{
 		if (!this.contenido(z, condicion, tabla)){
 			throw new UnrealException();		
 		} String eliminado = table.instE(z,condicion);
-		System.out.println(eliminado);
 		s.executeUpdate(eliminado);
 	}
 
@@ -179,7 +208,6 @@ public class BaseDeDatos{
 	public void actualizar(String iden, String tabla, String [] mod, Object [] ob) throws UnrealException,SQLException,DatoInvalidoException{
 		Tabla table = tablaSeleccionada(tabla);	
 		String actualizado = table.instK(iden, mod, ob);
-		System.out.println(actualizado);
 		s.executeUpdate(actualizado);
 	}
 
@@ -275,6 +303,7 @@ public class BaseDeDatos{
 			return rt +=";";
 		}
 
+		//Determina si un dato es fecha
 		private boolean esFecha(String s){
 			String [] ff = s.split("-");
 			try{

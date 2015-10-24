@@ -14,7 +14,7 @@ public class TestBaseDeDatos{
 	public TestBaseDeDatos() throws Exception{
 		bdd = new BaseDeDatos();
 		ds1 = new DataSet("La Creacion de Adan","Undefined","Fresco","Miguel Angel","Renacentista","Capilla Sixtina");
-		ds2 = new DataSet("Salvador Dalí","1904-05-11","1989-01-23","168","La Persistencia de la Memoria","4");
+		ds2 = new DataSet("Felipe Jacinto","1904-05-11","1989-01-23","168","Meh","4");
 		ds3 = new DataSet("Centre Pompidou","Francia","102500","1977-01-31","Industrialista","Arte Moderno");		
 	}
 
@@ -75,7 +75,7 @@ public class TestBaseDeDatos{
 		Assert.assertTrue(bdd.contiene(ds2,"AUTORES"));
 		Assert.assertTrue(bdd.contiene(ds3,"GALERIAS"));
 		bdd.elimina("La Creacion de Adan","TITLE","PINTURAS");
-		bdd.elimina("La Persistencia de la Memoria","FAMOUS","AUTORES");
+		bdd.elimina("Meh","FAMOUS","AUTORES");
 		bdd.elimina("Arte Moderno","FOCUS","GALERIAS");
 		Assert.assertTrue(!bdd.contiene(ds1,"PINTURAS"));
 		Assert.assertTrue(!bdd.contiene(ds2,"AUTORES"));
